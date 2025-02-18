@@ -13,7 +13,7 @@ const AutoIncrement = require('mongoose-sequence')(mongoose)
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json())
+app.use(express.urlencoded())
 
 app.use('/public', express.static(`${process.cwd()}/public`));
 
@@ -39,8 +39,9 @@ const shortUrlModel = mongoose.model('shorturls', shortUrlSchema)
 
 
 app.post('/api/shorturl', async (req, res) => {
-  const originalUrl = req.body.original_url
-  if (valid_url.isWebUri(originalUrl)){
+  const originalUrl = req.body.url
+  console.log(originalUrl)
+  if (valid_url.isWebUri(originalUrl)) {
     try {
       let document = await shortUrlModel.findOne({ original_url: originalUrl });
       if (document) {
@@ -54,7 +55,7 @@ app.post('/api/shorturl', async (req, res) => {
       res.json({ error: "could not create short url" });
     }
   } else {
-    res.json({error: "invalid url"})
+    res.json({ error: "invalid url" });
   }
 })
 
